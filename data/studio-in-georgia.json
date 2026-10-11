@@ -6,7 +6,7 @@
   "gallery": "https://user41874.na.imgto.link/public/20261007/8069a2c3dfe47c108814a9a3-georgia-banner.avif\nhttps://user41874.na.imgto.link/public/20261007/7855d9728f59618d257ee43d-opus-signature.avif\nhttps://user41874.na.imgto.link/public/20261007/6a98e41705689310c6ed0caf-opus-signature-3.avif\nhttps://user41874.na.imgto.link/public/20261007/a70d84b4417186e7e0005da4-opus-signature-2.avif\nhttps://user41874.na.imgto.link/public/20261007/940590b756283f623e139957-opus-signature-1.avif",
   "amenities": "",
   "nearby": "Beach|2 Mins\nCasino|5 Mins\nHotel|1 Mins\nAirport|11 Mins\nRestaurant|2 Mins\nShopping|2 Mins\nSchool|15 Mins\nDowntown|2 Mins\nPark|5 mins",
-  "about_project": "Georgia: Where Luxury Meets Value\n\nA New Benchmark of Premium Living\n\n1. Luxury within your budget: Enjoy a high-end lifestyle at a fraction of the cost of Dubai, London, or the Mediterranean, with full freehold ownership for foreign buyers.\n2. A setting worth living in: Black Sea coastline, mountain views, a mild climate, and a celebrated culture of wine and cuisine.\n3. Architecture that makes a statement: Distinguished by its modern design, an address crafted to be admired and to hold its value.\n4. Everything in one place: A unique concept that brings together all the services and infrastructure essential for complete family comfort, with premium living delivered by the developer.\n5. Smart returns: Strong tourism and business demand support rental income, while low taxes and a pro-investment framework help grow your wealth.",
+  "about_project": "",
   "about_dev": "",
   "agent_name": "Charandeep Singh",
   "agent_title": "Sr. Sales Director",
@@ -44,5 +44,25 @@
   "maintenance": "10/Sqft",
   "show_maintenance": false,
   "handover": "2029",
-  "show_handover": true
+  "show_handover": true,
+  "sec_gallery": true,
+  "sec_overview": true,
+  "sec_highlights": true,
+  "sec_payment": false,
+  "sec_pay_con": true,
+  "sec_pay_ho": true,
+  "sec_pay_post": true,
+  "sec_pay_total": true,
+  "sec_amenities": true,
+  "sec_nearby": true,
+  "sec_map": false,
+  "sec_about_project": false,
+  "sec_about_dev": false,
+  "highlights": [
+    "Luxury within your budget: Enjoy a high-end lifestyle at a fraction of the cost of Dubai, London, or the Mediterranean, with full freehold ownership for foreign buyers.",
+    "A setting worth living in: Black Sea coastline, mountain views, a mild climate, and a celebrated culture of wine and cuisine.",
+    "Architecture that makes a statement: Distinguished by its modern design, an address crafted to be admired and to hold its value.",
+    "Everything in one place: A unique concept that brings together all the services and infrastructure essential for complete family comfort, with premium living delivered by the developer.",
+    "Smart returns: Strong tourism and business demand support rental income, while low taxes and a pro-investment framework help grow your wealth."
+  ]
 }
