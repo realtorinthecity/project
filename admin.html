@@ -1,6 +1,7 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin</title>
 <style>body{font:15px sans-serif;max-width:760px;margin:20px auto;padding:0 14px}label{display:block;margin:8px 0 2px;font-weight:600;font-size:13px}input,textarea{width:100%;padding:8px;border:1px solid #bbb;border-radius:6px;box-sizing:border-box}
 fieldset{margin:16px 0;border:1px solid #ddd;border-radius:8px}legend{font-weight:700}button{padding:10px 18px;border:0;border-radius:6px;background:#058fff;color:#fff;cursor:pointer;margin:4px 8px 4px 0}#st{background:#eef;padding:10px;border-radius:6px;display:none;word-break:break-all}a{cursor:pointer;color:#058fff}.row{display:flex;gap:8px;align-items:center;margin:6px 0}.row>span{width:150px;font-weight:600;font-size:13px;flex:none}.row>input:not([type=checkbox]){flex:1;min-width:0}label:has(input[type=checkbox]){display:flex;gap:4px;align-items:center;font-weight:400;white-space:nowrap;margin:0}input[type=checkbox]{width:auto}
+.ed{min-height:140px;border:1px solid #bbb;border-radius:0 0 6px 6px;padding:8px;background:#fff}.tb{display:flex;gap:4px;flex-wrap:wrap;background:#f1f1f1;padding:4px;border:1px solid #bbb;border-bottom:0;border-radius:6px 6px 0 0}.tb button{background:#fff;color:#000;border:1px solid #ccc;padding:4px 10px;margin:0}.row>span.n{width:28px}.del{background:#e55!important;margin:0!important;padding:8px 12px!important}.sec{background:#eef6ff;padding:6px 8px;border-radius:6px;margin-bottom:8px}
 </style></head><body>
 <h2>Landing Page Admin</h2><div id="st"></div>
 <fieldset><legend>GitHub connection (stored only in this browser)</legend>
@@ -17,6 +18,7 @@ const def={slug:'',price:'4412222',video:'',map:'',gallery:'https://yoursite.com
 pp_book_on:true,pp_book_pct:'10',pp_rem_on:true,pp_rem_pct:'30',pp_rem_months:'30',pp_ho_on:true,pp_ho_pct:'30',pp_post_on:true,pp_post_pct:'30',pp_post_months:'24'};
 const ovd={project:'Black Sea Resort',developer:'Opus Development',type:'Apartments',beds:'Studio',size:'414 Sqft.',location:'Batumi',view:'Sea View',furnished:'Fully Furnished',parking:'No',maintenance:'10/Sqft',handover:'Q4, 2028'};
 OV.forEach(k=>{def[k]=ovd[k];def['show_'+k]=true});
+;['gallery','overview','highlights','payment','pay_con','pay_ho','pay_post','pay_total','amenities','nearby','map','about_project','about_dev'].forEach(k=>def['sec_'+k]=true);def.highlights=[];
 const nice=k=>k.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
 const say=m=>{$('st').style.display='block';$('st').innerHTML=m};
 const q=s=>String(s??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
@@ -39,19 +41,34 @@ async function up(inp){const f=inp.files[0];if(!f)return;cfg();try{say('Uploadin
 async function conn(){cfg();try{const l=await api('data')||[];$('list').innerHTML='<p><a onclick="form(def)">+ New page</a></p><ul>'+l.filter(f=>f.name.endsWith('.json')).map(f=>{const s=f.name.slice(0,-5);return '<li>'+s+' — <a onclick="edit(\''+s+'\')">edit</a> · <a target=_blank href="'+url(s)+'">view</a> · <a onclick="rm(\''+s+'\')">delete</a></li>'}).join('')+'</ul>';form(def);say('Connected.')}catch(e){say(e.message)}}
 async function edit(s){const t=await api('data/'+s+'.json',{raw:1});form({...def,...JSON.parse(t)});scrollTo(0,0)}
 async function rm(s){if(!confirm('Delete '+s+'?'))return;await del('data/'+s+'.json');await del('p/'+s+'/index.html');conn()}
+const SEC=(k,d)=>'<div class=sec>'+CK('sec_'+k,d,'<b>Show this section on the page</b>')+'</div>';
+const toH=t=>/<[a-z][\s\S]*>/i.test(t||'')?t:(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>');
+const cmd=(c,v)=>document.execCommand(c,false,v||null);
+const TB='<div class=tb>'+[['B','bold'],['I','italic'],['U','underline'],['Heading','formatBlock','h3'],['Paragraph','formatBlock','p'],['• List','insertUnorderedList'],['1. List','insertOrderedList'],['Clear','removeFormat']].map(b=>'<button type=button onmousedown="event.preventDefault();cmd(\''+b[1]+'\''+(b[2]?',\''+b[2]+'\'':'')+')">'+b[0]+'</button>').join('')+'<button type=button onmousedown="event.preventDefault();const u=prompt(\'Link URL (https://...)\');if(u)cmd(\'createLink\',u)">Link</button></div>';
+const ED=(k,t)=>'<label>'+t+'</label>'+TB+'<div class=ed id=ed_'+k+' contenteditable></div>';
+const hlRow=v=>'<div class=row><span class=n></span><input name=hl value="'+q(v)+'" placeholder="Highlight text"><button type=button class=del onclick="this.parentNode.remove();renum()">✕</button></div>';
+function renum(){document.querySelectorAll('#hls .n').forEach((s,i)=>s.textContent=(i+1)+'.')}
+function addHl(){$('hls').insertAdjacentHTML('beforeend',hlRow(''));renum();[...document.querySelectorAll('#hls input')].pop().focus()}
 function form(d){const PS=[['book','Book amount'],['rem','Remaining during construction',1],['ho','On handover'],['post','Post handover',1]];
  $('f').innerHTML='<label>Page slug (used in link)</label>'+I('slug',d,'black-sea-resort')
- +F('Overview — tick the rows to show on the page',OV.map(k=>'<div class=row><span>'+nice(k)+'</span>'+I(k,d)+CK('show_'+k,d,'Show')+'</div>').join(''))
- +F('Gallery',T('gallery',d,'Image URLs (full https:// links, one per line; first = WhatsApp preview image)')+'<label>Video (YouTube link or direct .mp4 URL) — shown as the last slide</label>'+I('video',d,'https://www.youtube.com/watch?v=...'))
- +F('Price (AED — other currencies convert automatically)','<label>Price in AED</label>'+I('price',d)
-  +'<p style="font-size:13px;color:#666">For each stage: tick Required (untick = shows “Not required”), enter the % of price, and the number of months. Leave months blank for a one-time payment.</p>'
+ +F('Gallery',SEC('gallery',d)+T('gallery',d,'Image URLs (full https:// links, one per line; first = WhatsApp preview image)')+'<label>Video (YouTube link or direct .mp4 URL) — shown as the last slide</label>'+I('video',d,'https://www.youtube.com/watch?v=...'))
+ +F('Price (AED — other currencies convert automatically)','<label>Price in AED</label>'+I('price',d))
+ +F('Overview — tick the rows to show',SEC('overview',d)+OV.map(k=>'<div class=row><span>'+nice(k)+'</span>'+I(k,d)+CK('show_'+k,d,'Show')+'</div>').join(''))
+ +F('Highlights (shown as 1, 2, 3…)',SEC('highlights',d)+'<div id=hls>'+(d.highlights||[]).map(hlRow).join('')+'</div><button type=button onclick="addHl()">+ Add highlight</button>')
+ +F('Payment Plan',SEC('payment',d)+'<div class=row><span>Sub-sections</span>'+CK('sec_pay_con',d,'During Construction')+CK('sec_pay_ho',d,'On Handover')+CK('sec_pay_post',d,'Post Handover')+CK('sec_pay_total',d,'Total')+'</div>'
+  +'<p style="font-size:13px;color:#666">For each stage: tick Required (untick = shows “Not required”), enter the % of price, and the months. Leave months blank for a one-time payment.</p>'
   +PS.map(s=>'<div class=row><span>'+s[1]+'</span>'+CK('pp_'+s[0]+'_on',d,'Required')+'<input name=pp_'+s[0]+'_pct value="'+q(d['pp_'+s[0]+'_pct'])+'" placeholder="%" style="max-width:80px">'+(s[2]?'<input name=pp_'+s[0]+'_months value="'+q(d['pp_'+s[0]+'_months'])+'" placeholder="months (blank = one-time)">':'')+'</div>').join(''))
- +F('Amenities & Nearby',T('amenities',d,'Amenities (one per line; optional “Name|Detail”)')+T('nearby',d,'Nearby (Label|Distance per line)'))
- +F('Location map','<label>Map image URL, or upload one</label>'+I('map',d,'URL or media/... path')+'<input type=file accept="image/*" onchange="up(this)" style="margin-top:6px">')
- +F('About',T('about_project',d,'About Project')+T('about_dev',d,'About Developer'))
+ +F('Amenities',SEC('amenities',d)+T('amenities',d,'One per line; optional “Name|Detail”'))
+ +F('Nearby Locations',SEC('nearby',d)+T('nearby',d,'Label|Distance per line'))
+ +F('Location map',SEC('map',d)+'<label>Map image URL, or upload one</label>'+I('map',d,'URL or media/... path')+'<input type=file accept="image/*" onchange="up(this)" style="margin-top:6px">')
+ +F('About Project',SEC('about_project',d)+ED('about_project','Text'))
+ +F('About Developer',SEC('about_dev',d)+ED('about_dev','Text'))
  +F('Agent (WhatsApp number: country code, no +)',['agent_name','agent_title','agent_photo','whatsapp','phone'].map(k=>'<label>'+nice(k)+'</label>'+I(k,d)).join(''))
- +F('Save','<button onclick="save(false)">Save current page</button><br><label>Or save as a new page (new slug)</label><input id="ns" placeholder="another-project"><button style="background:#333" onclick="save(true)">Save as new page</button>')}
-async function save(asNew){cfg();const fd=new FormData($('f')),d={};for(const k in def)d[k]=typeof def[k]=='boolean'?fd.has(k):(fd.get(k)??'');
+ +F('Save','<button type=button onclick="save(false)">Save current page</button><br><label>Or save as a new page (new slug)</label><input id="ns" placeholder="another-project"><button type=button style="background:#333" onclick="save(true)">Save as new page</button>');
+ ['about_project','about_dev'].forEach(k=>{const e=$('ed_'+k);e.innerHTML=toH(d[k]);e.onpaste=ev=>{ev.preventDefault();document.execCommand('insertText',false,ev.clipboardData.getData('text/plain'))}});renum()}
+async function save(asNew){cfg();const fd=new FormData($('f')),d={};
+ for(const k in def)d[k]=Array.isArray(def[k])?fd.getAll('hl').map(s=>s.trim()).filter(Boolean):typeof def[k]=='boolean'?fd.has(k):(fd.get(k)??'');
+ ['about_project','about_dev'].forEach(k=>{const e=$('ed_'+k);d[k]=e.textContent.trim()?e.innerHTML.trim():''});
  const s=sg(asNew?$('ns').value:d.slug);if(!s)return say('Enter a page slug.');
  const sum=['book','rem','ho','post'].reduce((t,k)=>t+(d['pp_'+k+'_on']?+d['pp_'+k+'_pct']||0:0),0);
  if(sum!=100&&!confirm('Payment plan percentages total '+sum+'%, not 100%. Save anyway?'))return;
