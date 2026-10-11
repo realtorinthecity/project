@@ -38,7 +38,7 @@
   "view": "Sea View",
   "show_view": true,
   "furnished": "Fully Furnished",
-  "show_furnished": true,
+  "show_furnished": false,
   "parking": "Yes",
   "show_parking": false,
   "maintenance": "10/Sqft",
@@ -53,16 +53,16 @@
   "sec_pay_ho": true,
   "sec_pay_post": true,
   "sec_pay_total": true,
-  "sec_amenities": true,
+  "sec_amenities": false,
   "sec_nearby": true,
   "sec_map": false,
   "sec_about_project": false,
   "sec_about_dev": false,
   "highlights": [
-    "Luxury within your budget: Enjoy a high-end lifestyle at a fraction of the cost of Dubai, London, or the Mediterranean, with full freehold ownership for foreign buyers.",
-    "A setting worth living in: Black Sea coastline, mountain views, a mild climate, and a celebrated culture of wine and cuisine.",
-    "Architecture that makes a statement: Distinguished by its modern design, an address crafted to be admired and to hold its value.",
-    "Everything in one place: A unique concept that brings together all the services and infrastructure essential for complete family comfort, with premium living delivered by the developer.",
-    "Smart returns: Strong tourism and business demand support rental income, while low taxes and a pro-investment framework help grow your wealth."
+    "Luxury within budget: High-end homes at less than half the price of Dubai’s beachfront properties.",
+    "Up to 14% ROI: Strong rental demand delivers attractive returns.",
+    "Residency visa: Secure residency through your property investment.",
+    "Gateway to Europe: Easy entry to a European country with a growing global profile.",
+    "Full ownership: Own your home outright in a foreign country, with a simple purchase process."
   ]
 }
